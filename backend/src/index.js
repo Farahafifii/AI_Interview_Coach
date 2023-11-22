@@ -1,11 +1,20 @@
-import OpenAI from 'openai';
+const config = require('./config');
+const chatRouter = require("./routes/chatRoutes");
+const app = require('./App.js');
 
-const openai = new OpenAI({
-  apiKey: "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" // Change wiht ours
+
+// Define a home route
+app.get('/home', (req, res) => {
+  res.status(200).send('You have everything installed!');
 });
 
-const chatCompletion = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: [{"role": "user", "content": "Hello!"}],
-  });
-  console.log(chatCompletion.choices[0].message);
+// Use the chat routes
+app.use("/api", chatRouter); // Adjust the path ("/api")
+
+const PORT = config.server.port;
+//const HOST = config.server.host;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port:${PORT}`);
+});
+

@@ -1,24 +1,31 @@
-const express = require("express");
+const express = require('express');
+const cors = require('cors');
+const config = require('./config');
+const setupRoutes = require('./routes');
+// const {
+//   protectAdmin,
+//   protectInstructor,
+//   protectCorporateTrainee,
+//   protectIndividualTrainee,
+//   protect,
+// } = require('./src/middleware/authMiddleware');
+
 const app = express();
-const port = process.env.PORT || "8000";
 
-const chatController = require("./controllers/chatController");
-const cors = require("cors");
+// Middlewares
 app.use(cors());
-app.get("/home", (req, res) => {
-  res.status(200).send("You have everything installed!");
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+
+// Add other middlewares as needed
+
+// Setup routes
+setupRoutes(app);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-
-app.listen(port, () => {
-  console.log(`Listening to requests on http://localhost:${port}`);
-});
-
-app.get("/home", (req, res) => {
-  res.status(200).send("You have everything installed!");
-});
-
-app.use("/", require("./routes/chatRoutes"));
+module.exports = app;
