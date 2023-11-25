@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {
-  sendAnswerToGPT
-} = require("../controllers/chatController");
+const { setupChat, chatWithGPT } = require("../controllers/chatController");
 
-router.get("/chat", sendAnswerToGPT);
+router.post("/startChat", setupChat);
+router.post("/interview", chatWithGPT);
 
 module.exports = router;
