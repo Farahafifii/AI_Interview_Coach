@@ -9,7 +9,7 @@ app.get('/home', (req, res) => {
 });
 
 // Use the chat routes
-app.use("/api", chatRouter); // Adjust the path ("/api")
+app.use("/api", chatRouter); 
 
 const PORT = config.server.port;
 //const HOST = config.server.host;

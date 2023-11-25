@@ -11,7 +11,7 @@
 
 
 
-const chatRoutes = require('./chatRoutes');  // Adjust the path as needed
+const chatRoutes = require('./chatRoutes');
 
 const setupRoutes = (app) => {
   // Use the chat routes

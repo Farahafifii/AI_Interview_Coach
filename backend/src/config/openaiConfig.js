@@ -10,7 +10,6 @@ if (!openaiApiKey) {
 }
 
 
-
 const openai = new OpenAIApi({ key: openaiApiKey });
 
 module.exports = openai;
