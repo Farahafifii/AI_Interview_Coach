@@ -7,27 +7,37 @@ const dilimeter = '####';
 // only uset once to tell the chatbot the info of the user
 const setupChat = asyncHandler(async (req, res) => {
   const { jobTitle, experienceLvl, questionType, notes } = req.body;
-  console.log(messages);
   // Generate system message (to be modified)
-  const systemMessage = `you are an interview coach.
-  you make an interview for a ${jobTitle} by asking him ${questionType} questions ${experienceLvl} level.
-  the interview consists of 5 questions unless the user added in the additional notes that he needs more questions then give him more.
-  the user messages will be delimited by ${dilimeter}.
-  customize the questions according to this user notes (if any): ${dilimeter}${notes}${dilimeter}.
-  you ask one question at a time then you receive the user's answer, then ask the next question and so on.
-  you analyze the answers and customize the rest of interview questions based on the user's background and experience.
-  at the end of the interview give the user a detailed feedback based on his answers, behavior, decision-making process and overall performance in the interview.
-  don't give the user any kind of feedback about his answers during the interview.
-  the feedback should be in the form
-  Strengths: Acknowledge their positive attributes and strengths. Point out specific competencies and strong suits. Highlight areas where they demonstrated proficiency. Mention any notable advantages or assets.
-  Areas for Improvement: Provide constructive feedback on aspects that can be enhanced. Highlight specific areas where there is room for growth. Suggest opportunities for development.
-  Overall: give overall feedback summary based on his performance in the interview.`;
+  const systemMessage = `You are a professional interviewer, you are conducting an interview for a ${jobTitle}. Tailor your questions to focus on ${questionType} and target candidates with ${experienceLvl} level of expertise.
+  The interview comprises 5 questions, but be flexible. If the user requests more questions in their additional notes, provide them accordingly.
+  User messages will be delimited by ${dilimeter}. Customize your questions based on any specific notes provided by the user: ${dilimeter}${notes}${dilimeter}.
+  Follow a structured approach: ask one question at a time, receive the user's answer, and proceed to the next question.
+  Follow the next steps to analyze the responses to tailor subsequent questions to the user's background and experience.
+  
+  Extract Information from User Responses:
+  1. Parse and analyze the user's responses to extract relevant information.
+  2. Identify key details such as technologies mentioned, experience levels, specific skills, etc.
+  
+  Use Extracted Information to Customize Questions:
+  3. Modify your chatbot logic to use the extracted information to generate context-aware questions.
+  4. For example, if the user mentions expertise in a particular programming language, ask more detailed questions about that language.
+  
+  Maintain Conversation Context:
+  5. Keep track of the conversation context, including information gathered from the user.
+  6. Use this context to generate follow-up questions that build on previous responses.
+  
+  At the conclusion of the interview after receiving the answer of the last question from the user, offer detailed feedback.
+  Remember, avoid providing feedback on individual answers during the interview. Your feedback should include:
+  Strengths: Acknowledge positive attributes, competencies, and strengths. Highlight areas where the candidate demonstrated proficiency, and mention any notable advantages or assets.
+  Areas for Improvement: Provide constructive feedback on aspects that can be enhanced. Identify specific areas for growth and suggest opportunities for development.
+  Overall: Summarize the user's performance in the interview, providing a holistic view of their strengths and areas for improvement.
 
-  const startMessage = `${dilimeter}start my interview${dilimeter}`;
+  Now, let's start the interview. ask the user the first question`;
+
+
 
   messages.push(
     {'role':'system', 'content':systemMessage},
-    {'role':'user', 'content':startMessage},
   );
   const gptResponse = await getChatCompletion(messages.map(msg => ({ role: msg.role, content: msg.content })));
   messages.push({ 'role': 'assistant', 'content': gptResponse });
@@ -36,14 +46,12 @@ const setupChat = asyncHandler(async (req, res) => {
 
 
 const chatWithGPT = async (req, res) => {
-  const userAnswer = req.body;
-  let userMessage = `${dilimeter}${userAnswer}${dilimeter}`;
-  messages.push({ 'role': 'user', 'content': userMessage });
+  const { userAnswer } = req.body;
+  messages.push({ 'role': 'user', 'content': `${dilimeter}${userAnswer}${dilimeter}` });
 
   const gptResponse = await getChatCompletion(messages.map(msg => ({ role: msg.role, content: msg.content })));
-
   messages.push({ 'role': 'assistant', 'content': gptResponse });
-
+  console.log(messages);
   res.status(200).json({ completion: gptResponse });
 };
 

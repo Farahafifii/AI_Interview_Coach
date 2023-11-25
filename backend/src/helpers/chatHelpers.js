@@ -2,7 +2,7 @@
 const openai = require('../config/openaiConfig.js');
 
 
-const getChatCompletion = async (messages, temperature=0.7, max_tokens=500) => {
+const getChatCompletion = async (messages, temperature=1, max_tokens=500) => {
     const chatCompletion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: messages,
